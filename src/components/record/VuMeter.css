@@ -1,0 +1,25 @@
+
+html.webworkers.adownload #vu-meter {
+	display:block;
+}
+
+#vu-meter {
+	display:none;
+	border: 2px #508888 solid;
+    border-right-color: #8bb;
+    border-bottom-color: #8bb;
+    border-radius: 4px;
+	position:absolute;
+	bottom: 12px;
+	right: 20px;
+	background:#000;
+	background-image: radial-gradient(80% 40%  at 40px 8px, #699 20%, #366 99%);
+}
+
+@media (max-width: 875px) {
+	html.webworkers.adownload #vu-meter{
+		display:none;
+	}
+}
+
+	

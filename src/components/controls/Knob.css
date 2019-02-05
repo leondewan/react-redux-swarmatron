@@ -1,0 +1,92 @@
+
+
+.knob {
+	position:relative;
+	width:40px;
+	height:40px;
+	border-radius:50%;
+	background:#333;
+	margin:0;
+	margin-top:30px;
+	margin-bottom:10px;
+	z-index:1;
+	box-shadow: 1px 2px 3px #666;
+}
+
+.knob:before{
+	position:absolute;
+	left:-2px;
+	top:-6px;
+	width:72.5%;
+	height:72.5%;
+	content: ""; 
+	border-radius:50%;
+	border:5px #fff solid;
+}
+
+.knob label{
+	top:-30px;
+	left:-3px;
+}
+
+.knob input{
+	position:absolute;
+	bottom:-23px;
+	left:-2px;
+	width:40px;
+	height:14px;
+	line-height:14px;
+	padding:2px;
+	background:#366;
+	background-image: radial-gradient(#699 0%, #366 75%);
+	border:none;
+	border:1px #699 solid;
+	border-right-color: #8bb;
+	border-bottom-color: #8bb;
+	border-radius:4px;
+	color:#fa3;
+	font-size: 0.75em;
+	font-weight:bold;
+	text-shadow: #853 1px 2px 1px;
+	text-align: center;
+}
+
+.knob .body {
+	position:absolute;
+	transform:rotate(-150deg);
+	top:-12%; left:-5%;
+	z-index:1;
+	background:#666;
+	width:100%;
+	height:100%;
+	border-radius:50%;
+
+
+
+	-webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 2s;
+    -webkit-transition-timing-function: linear;
+
+	transition-property: transform;
+    transition-duration: .1s;
+    transition-timing-function: linear;
+
+}
+
+.knob .pointer {
+	width:12.5%;
+	height:50%;
+	background:#fff;
+	margin-left:45%;
+	z-index:1;
+}
+
+
+@media (max-width: 915px) {
+	.knob label{
+		top:-25px;
+	}
+}
+
+
+

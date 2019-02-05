@@ -1,0 +1,52 @@
+
+
+.ctl-ribbon{
+	box-shadow: 3px 5px 5px #666;
+	position:relative;
+	top:0;
+	margin:auto;
+	height:50px;
+	background-color: #699;
+	border:1px #588 solid;
+	border-radius:5px;
+}
+
+#pitch-ribbon {
+	width:95%;
+	margin-top:15px;
+	transition: margin-top 0.5s;
+}
+
+#swarm-ribbon{
+	width:70%;
+	margin-top:20px;
+	margin-bottom:10px;
+	transition: margin 0.5s;
+}
+
+#pitch-ribbon:active, #swarm-ribbon:active{
+	box-shadow: 1px 2px 2px #333;
+	top:3px;
+}
+
+@media (max-width: 915px) {
+	 #pitch-ribbon {
+        margin-top:15px;
+    }
+
+    #swarm-ribbon {
+        margin-top:10px;
+        margin-bottom:5px;
+    }
+}	
+
+@media (max-width:620px){	
+	#pitch-ribbon {
+        margin-top:10px;
+    }
+
+    #swarm-ribbon {
+        margin-top:7px;
+        margin-bottom:0;
+    }
+}

@@ -1,0 +1,13 @@
+export const SET_TRACK = 'set_track';
+export const SET_Q = 'set_q';
+export const SET_KNOB_CUTOFF = 'set_cutoff';
+export const SET_FILTERENV = 'set_filterEnv';
+export const SET_DR = 'set_dr';
+export const SET_ATTACKTIME = 'set_attacktime';
+export const SET_DECAYTIME = 'set_decaytime';
+export const SET_SUSTAINLEVEL = 'set_sustainlevel';
+export const SET_RELEASETIME = 'set_releasetime';
+export const SET_CENTERTONE = 'set_centertone';
+export const SET_SWARMINTERVAL = 'set_swarminterval';
+export const SET_VOICESTOGGLE = 'set_voicesToggle';
+export const LOAD_PRESETS = 'load_presets'

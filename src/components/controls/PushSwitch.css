@@ -1,0 +1,19 @@
+
+.pushswitch{
+	width:40px;
+	height:40px;
+	background:#bcb;
+	border:2px #dee outset;
+	border-radius:5px;
+}
+
+.pushswitch.pushed {
+	border:2px #eee inset;
+}
+
+.pushswitch.on{
+	background:radial-gradient(circle, #ff0,#9f9,#aaa);
+	transition-property: background;
+    transition-duration: 5s;
+    transition-timing-function: linear;
+}
