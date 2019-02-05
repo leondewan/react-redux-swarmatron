@@ -20,7 +20,7 @@ import {
 } from '../actions/types';
 
 const initialState = {centerTone: 100, swarmInterval: 0,
-    voicestoggle: [], 
+    voicesToggle: [], 
     filterTrack: 0.75, filterQ: 12, filterKnobCutoff: 600, filterEnv: 0.75, dr: 20,
     attackTime:0.1, decayTime:0.2, sustainLevel:0.3, releaseTime:4.5
 }
@@ -32,7 +32,7 @@ export default (state =  initialState, action) => {
         case SET_SWARMINTERVAL:
             return {...state, swarmInterval: action.payload}; 
         case SET_VOICESTOGGLE:
-            return {...state, voicestoggle: action.payload};
+            return {...state, voicesToggle: action.payload};
        
         case SET_TRACK:
             return {...state, filterTrack: action.payload};

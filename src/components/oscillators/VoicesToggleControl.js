@@ -1,18 +1,25 @@
 import React, { Component, Fragment }  from 'react';
 import { connect } from 'react-redux';
 
-import { PushSwitch } from '../controls/PushSwitch';
+import PushSwitch from '../controls/PushSwitch';
 import * as actions from '../../actions';
 
 class VoicesToggleControl extends Component {
     constructor(props) {
         super(props);
         this.switchVoice = this.switchVoice.bind(this);
+        this.updateVoicesFromPreset = this.updateVoicesFromPreset.bind(this);
     }
+
     componentWillMount() {
         this.voicesState = [true, true, true, true, true, true, true, true];
-        console.log(this.props);
     }
+    
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.voicesToggle!==this.props.voicesToggle){  
+             this.updateVoicesFromPreset();
+        }
+     }
 
     switchVoice = (isOn, voice ) => {
         if(isOn){
@@ -29,9 +36,9 @@ class VoicesToggleControl extends Component {
         this.props.setVoicesToggle(this.voicesState);
     }
 
-    // updateVoicesFromPreset = () => {
-    //     this.props.state.voicesToggle.forEach((voice, i) => this.switchVoice(voice, this.props.state.voicesToggle[i]));
-    // }
+    updateVoicesFromPreset = () => {
+        this.props.voicesToggle.forEach((val, i) => this.switchVoice(val, i));
+    }
     
     render () {
         return (

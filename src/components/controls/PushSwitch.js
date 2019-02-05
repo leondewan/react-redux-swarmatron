@@ -1,16 +1,11 @@
 
 import React from 'react';
+import { connect } from 'react-redux';
 import "./PushSwitch.css"
+import VoicesToggleControl from '../oscillators/VoicesToggleControl';
 
-export class PushSwitch extends React.Component {
-	// constructor(props) {
-	// 	super(props);
-	// 	this.toggleVoice = this.toggleVoice.bind(this);
-	// }
-
+class PushSwitch extends React.Component {
 	state = { powered: true, pushed: true }
-
-	
 
 	toggleVoice = (event) => {
 		event.preventDefault();
@@ -35,10 +30,11 @@ export class PushSwitch extends React.Component {
 			 this.powerVoice(this.props.deviceOn);
 			 
 		}
+		if(prevProps.pushed!=this.props.pushed) {
+			this.setState({powered: this.props.pushed, pushed: this.props.pushed});
+		}
 	 }
-
-	//factor these out
-
+	
 	powerVoice = (on) => {
 		if (on && this.state.pushed) {
 			this.setState({powered: true});
@@ -63,7 +59,13 @@ export class PushSwitch extends React.Component {
 				onTouchStart={this.toggleVoice}></li>
 		);
 	}
-}	
+}
+
+const mapStateToProps = (state, ownProps) => {
+	return {pushed: state.voicesToggle[ownProps.voice]}
+}
+
+export default connect(mapStateToProps)(PushSwitch);
 
 
 
