@@ -4,32 +4,33 @@ import "./Knob.css";
 
 export class Knob extends React.Component {
 	state = { ctlVal: 1 };
-	
+
 	componentDidMount(){
 		this.setState({ctlVal:this.props.setScaledValue});
 		this.turnValue=this.props.setKnobAngle;
 		this.rotateKnob();
 	}
-	
-	
+
+
     componentDidUpdate(prevProps, prevState) {
-		if(prevProps.setScaledValue!==this.props.setScaledValue){  
+		if(prevProps.setScaledValue!==this.props.setScaledValue){
 			 this.updateCtlValue();
 		}
 	 }
 
 	initiateDrag = (event) => {
 		event.preventDefault();
+		event.gesture.preventDefault();
 		this.prevTurnValue=this.turnValue;
 		if(event.touches) this.turnStart=event.changedTouches[0].clientY;
 		else this.turnStart=event.clientY;
 
 		document.addEventListener('mousemove', this.operate);
 		document.addEventListener('touchmove', this.operate);
-		document.addEventListener("mouseup", () => {			
+		document.addEventListener("mouseup", () => {
 			document.removeEventListener("mousemove", this.operate);
 			document.removeEventListener("touchmove", this.operate);
-		});	
+		});
 
 		document.addEventListener("touchend", () => {
 			document.removeEventListener("touchmove", this.operate);
@@ -43,7 +44,7 @@ export class Knob extends React.Component {
 		else turn=event.clientY;
        	let currTurn=Math.round(this.prevTurnValue - turn + this.turnStart);
 
-       	if(currTurn>=-150&&currTurn<=150){ 
+       	if(currTurn>=-150&&currTurn<=150){
        		this.turnValue=currTurn;
        		this.rotateKnob();
        		this.props.returnRawValue(this.turnValue, this.props.param);
@@ -80,9 +81,9 @@ export class Knob extends React.Component {
 
 
 	render() {
-		return ( 
-			<li className="knob">  
-				<label>{this.props.children}</label>					
+		return (
+			<li className="knob">
+				<label>{this.props.children}</label>
 				<div className="body" onMouseDown={this.initiateDrag}
 					onTouchStart={this.initiateDrag}
 					ref={(knobElement) => { this.knobEl=knobElement; }} >

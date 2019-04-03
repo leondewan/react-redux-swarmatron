@@ -1,49 +1,48 @@
 import React, { Component } from 'react';
 var FileSaver = require('file-saver');
-import { CSSTransition } from 'react-transition-group'; 
+import { CSSTransition } from 'react-transition-group';
 
 import "../controls/RecSwitch.css"
 
 export class RecSwitch extends Component {
-	
+
 	state = {powered: true, recordOn: false, savePending: false, performanceName: ''}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.deviceOn!==this.props.deviceOn){  
+		if(prevProps.deviceOn!==this.props.deviceOn){
 			 this.setState({powered: this.props.deviceOn});
-			 
+
 		}
 	 }
 
 	toggleRecordButton = (event) => {
 		event.preventDefault();
 		this.setState({recordOn: !this.state.recordOn}, () => this.operateRecorder());
-		console.log('this on click', this);
-	}	
+	}
 
 	operateRecorder = () => {
-		if(this.state.recordOn) { 
-			this.props.recorder.record(); 
+		if(this.state.recordOn) {
+			this.props.recorder.record();
 		} else {
 			this.props.recorder.stop();
 			this.props.recorder.exportWAV( (blob) => {
-				this.setState({savePending: true}); 
-				this.performancefile = blob;             
+				this.setState({savePending: true});
+				this.performancefile = blob;
 			});
-            
+
             this.props.recorder.clear();
 		}
-		this.styleRecButtonState();        
+		this.styleRecButtonState();
 	}
 
 	handleOnChange = (event) => {
 		this.setState({performanceName: event.target.value});
 	}
-	
+
 	savePerformance = () => {
 		FileSaver.saveAs(this.performancefile, this.state.performanceName || 'unnamed swarm performance');
   		this.setState({savePending: false});
-  		
+
 	}
 
 	styleRecButtonState = () => {
@@ -53,7 +52,7 @@ export class RecSwitch extends Component {
 	styleSaveButtonState = () => {
 		return `saveswitch ${this.state.savePending ? '': 'disabled'}`;
 	}
-	
+
 	render() {
 		const {
 			savePending
@@ -79,16 +78,12 @@ export class RecSwitch extends Component {
 							className={this.styleSaveButtonState()}
 							onClick={this.savePerformance}
 						/>
-						<label className="sublabel">save</label>
+						<label className="sublabel">Save</label>
 					</div>
 				</CSSTransition>
-				
+
 
 			</div>
 		);
 	}
-}	
-
-
-
-
+}

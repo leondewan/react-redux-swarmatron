@@ -1,56 +1,51 @@
 
 import React from 'react';
-import { connect } from 'react-redux';
 import "./PushSwitch.css"
-import VoicesToggleControl from '../oscillators/VoicesToggleControl';
 
-class PushSwitch extends React.Component {
-	state = { powered: true, pushed: true }
-
+export class PushSwitch extends React.Component {
+	state = { powered: this.props.ext, pushed: this.props.ext }
 	toggleVoice = (event) => {
 		event.preventDefault();
-		this.setState({powered: !this.state.powered, pushed: !this.state.pushed}, () => this.switchVoice());
+		this.setState({ powered: !this.state.powered, pushed: !this.state.pushed }, () => this.switchVoice());
+	}
+
+	setSwitch = () => {
+		this.setState({ powered: this.props.ext, pushed: this.props.ext }, () => this.switchVoice());
 	}
 
 	switchVoice = () => {
 		if(this.state.powered){
- 				this.props.push(this.state.pushed, this.props.voice);
+ 				this.props.power(this.state.pushed, this.props.voice);
 		} else {
-			this.props.push(false, this.props.voice);
+			this.props.power(false, this.props.voice);
 		}
-	}
-
-	componentDidMount(){
-		console.log('from pushbutton', this);
-
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.deviceOn!==this.props.deviceOn){  
+		if(prevProps.deviceOn!==this.props.deviceOn){
 			 this.powerVoice(this.props.deviceOn);
-			 
 		}
-		if(prevProps.pushed!=this.props.pushed) {
-			this.setState({powered: this.props.pushed, pushed: this.props.pushed});
+		if(prevProps.ext!==this.props.ext){
+			 this.setSwitch(this.props.ext);
 		}
 	 }
-	
+
 	powerVoice = (on) => {
 		if (on && this.state.pushed) {
 			this.setState({powered: true});
-			this.props.push(true, this.props.voice);
+			this.props.power(true, this.props.voice);
 		} else {
-			this.props.push(false, this.props.voice);
+			this.props.power(false, this.props.voice);
 			this.setState({
-			powered:false
-		});
+				powered:false
+			});
 		}
 	}
 
 	styleButtonState = () => {
 		return `pushswitch ${this.state.pushed ? 'pushed': ''} ${this.state.powered? 'on': ''}`;
 	}
-	
+
 	render() {
 		const buttonStateStyle = this.styleButtonState();
 		return(
@@ -60,13 +55,3 @@ class PushSwitch extends React.Component {
 		);
 	}
 }
-
-const mapStateToProps = (state, ownProps) => {
-	return {pushed: state.voicesToggle[ownProps.voice]}
-}
-
-export default connect(mapStateToProps)(PushSwitch);
-
-
-
-
