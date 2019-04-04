@@ -32,7 +32,7 @@
 }
 
 .save-as-enter {
-	opacity: 0;	
+	opacity: 0;
 	transform: scale(0.1);
 }
 
@@ -63,7 +63,7 @@ html.webworkers.adownload .record {
 	margin:10px 0;
 }
 
-.recswitch{
+.recswitch {
 	width:30px;
 	height:30px;
 	margin:auto;
@@ -76,14 +76,14 @@ html.webworkers.adownload .record {
 }
 
 .recswitch:hover{
-	background-image: radial-gradient(farthest-corner at 15px 15px , #add 0%, #588 95%);	
+	background-image: radial-gradient(farthest-corner at 15px 15px , #add 0%, #588 95%);
 }
 
 .recswitch.pushed {
 	border:1px #cbb inset;
 }
 
-.recswitch.on{
+.recswitch.on {
 	background:radial-gradient(circle, #ff0,#f99,#aaa);
 	transition-property: background;
     transition-duration: 5s;
@@ -98,7 +98,7 @@ html.webworkers.adownload .record {
 	height:20px;
 	background:#ccc;
 	background-image: radial-gradient(circle , #ddd 40%, #999 75%);
-	
+
 	border-radius:20px;
 	border-top:3px #ccc solid;
 	border-right:3px #bbb solid;
@@ -133,10 +133,7 @@ html.webworkers.adownload .record {
 }
 
 @media (max-width: 875px) {
-	html.webworkers.adownload .record{
+	html.webworkers.adownload .record {
 		display:none;
 	}
 }
-
-
-

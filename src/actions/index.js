@@ -1,11 +1,10 @@
-import { SET_TRACK, SET_Q, SET_KNOB_CUTOFF, 
-    SET_FILTERENV, SET_DR,  SET_ATTACKTIME, 
-    SET_DECAYTIME, SET_SUSTAINLEVEL, 
-    SET_RELEASETIME, SET_CENTERTONE, 
-    SET_SWARMINTERVAL, 
+import { SET_TRACK, SET_Q, SET_KNOB_CUTOFF,
+    SET_FILTERENV, SET_DR,  SET_ATTACKTIME,
+    SET_DECAYTIME, SET_SUSTAINLEVEL,
+    SET_RELEASETIME, SET_CENTERTONE,
+    SET_SWARMINTERVAL,
     SET_VOICESTOGGLE,
     LOAD_PRESETS} from "./types";
-import { bindActionCreators } from "redux";
 
 export const setTrack = (val) => {
     return {
@@ -97,4 +96,3 @@ export const loadPresets = (val) => {
         payload: val
     }
 }
-

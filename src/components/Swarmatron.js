@@ -12,10 +12,10 @@ import SwarmEngine from './utils/SwarmEngine'
 import './Swarmatron.css'
 
 class Swarmatron extends React.Component {
-    state = {powerOn: true}
+    state = { deviceOn: true }
 
 	componentWillMount() {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)(); 
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.swarmEngine = new SwarmEngine(this.audioContext);
     }
 
@@ -25,21 +25,22 @@ class Swarmatron extends React.Component {
             document.activeElement.blur();
         });
     }
-       
+
     componentWillUnmount() {
         this.audioContext.close();
     }
-    
+
     togglePower = () => {
-        const powerstate = this.state.deviceOn;
-        this.setState({powerOn: !powerstate});
-        if(!this.state.deviceOn) {
-            this.swarmEngine.voices.voices.forEach((v, i) => {
-                this.toggleVoice(true, i);
+        const powerState = this.state.deviceOn;
+        const { voices } = this.swarmEngine.voices;
+        this.setState({deviceOn: !this.state.deviceOn});
+        if(!powerState) {
+            voices.forEach((v, i) => {
+                voices[i].voiceOn();
             });
         } else {
-            this.swarmEngine.voices.voices.forEach((v, i) => {
-                this.toggleVoice(false, i);
+            voices.forEach((v, i) => {
+                voices[i].voiceOff();
             });
             this.resetEnvelopes();
         }
@@ -52,19 +53,19 @@ class Swarmatron extends React.Component {
         this.swarmEngine.filter.detune.cancelScheduledValues(now);
         this.swarmEngine.filter.detune.value=0;
     }
-    
-    render(){ 
+
+    render(){
       	return(
             <div id="swarmatron">
           		<form id="mainpanel" className="group">
                     <label className="voices">VOICES 1 - 8 </label>
                     <ul className="mainswitchrow group">
                         <VolumeControl
-                            swarmVol = {this.swarmEngine.swarmVol}
+                            swarmVol={this.swarmEngine.swarmVol}
                             setVolume={this.swarmEngine.setVol}
                             volume={1}
                         />
-                        <VoicesToggleControl 
+                        <VoicesToggleControl
                             voices={this.swarmEngine.voices}
                             deviceOn={this.state.deviceOn}
                         />
@@ -80,26 +81,24 @@ class Swarmatron extends React.Component {
                         volumeEnv={this.swarmEngine.volumeEnv}
                      />
                     <RecSwitch
-                         deviceOn={this.state.deviceOn} 
+                         deviceOn={this.state.deviceOn}
                          recorder={this.swarmEngine.recorder}
                     />
-                    <VuMeter audioContext={this.audioContext} 
+                    <VuMeter audioContext={this.audioContext}
                     ref={instance => { this.swarmEngine.vuMeter = instance; }}
                     />
           		</form>
                 <div id="ribbonpanel" className="group">
                     <PresetControl />
                     <VoiceControl
-                        voices = {this.swarmEngine.voices}
-                        volumeEnv = {this.swarmEngine.volumeEnv}
-                        filtenv = {this.swarmEngine.filtenv}
+                        voices={this.swarmEngine.voices}
+                        volumeEnv={this.swarmEngine.volumeEnv}
+                        filtenv={this.swarmEngine.filtenv}
                     />
                 </div>
-          	</div> 
-        ); 	
-    }  
+          	</div>
+        );
+    }
 }
 
 export default Swarmatron;
-
-

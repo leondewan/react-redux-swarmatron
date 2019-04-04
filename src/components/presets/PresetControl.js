@@ -10,8 +10,6 @@ class PresetControl extends React.Component {
         this.presets = presets;
         this.loadUserPresets();
         this.nameInput = React.createRef();
-        this.latestPresetIndex = 0;
-
     }
 
     state ={ 
@@ -36,11 +34,8 @@ class PresetControl extends React.Component {
             name: this.nameInput.current.value,
             values: this.props.swarmState
         }
-        this.presets.push(newPreset);
-        debugger;
-        this.latestPresetIndex = this.presets.length - 1;
+        this.presets.unshift(newPreset);
         this.toggleSaveDialog();
-        console.log('new preset', JSON.stringify(newPreset));
         localStorage.setItem(`swarm-preset-${newPreset.name}`, JSON.stringify(newPreset));
     }
 
@@ -63,7 +58,7 @@ class PresetControl extends React.Component {
 	render() {
 		return(
 			<div className="presetmanager">
-                <select value={this.presets[this.latestPresetIndex].name} onChange={this.choosePreset}>
+                <select onChange={this.choosePreset}>
                     {presets.map((val, index) => 
                         <option key={index.toString()}>{val.name}</option>
                     )}

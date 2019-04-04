@@ -3,7 +3,6 @@ import React from 'react';
 import "./VuMeter.css"
 
 export class VuMeter extends React.Component {
-
 	constructor(props){
         super(props);
 		this.context=props.audioContext;
@@ -26,15 +25,15 @@ export class VuMeter extends React.Component {
             var average = getAverageVolume(array);
             this.drawSignalAmplitude(average);
         }
- 
+
         function getAverageVolume(array) {
             var values = 0;
-            var average;     
-            var length = array.length; 
+            var average;
+            var length = array.length;
             for (var i = 0; i < length; i++) {
                 values += array[i];
             }
-     
+
             average = values / length;
             return average;
         }
