@@ -5,6 +5,8 @@ import * as actions from '../../actions'
 import { ScalingMath } from '../utils/scalingMath';
 import { Knob } from '../controls/Knob';
 
+//refactor to hooks syntax
+
 class EnvelopeControl extends Component {
   	constructor(props) {
         super(props);

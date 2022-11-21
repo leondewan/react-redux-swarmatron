@@ -2,6 +2,8 @@ import React from 'react';
 
 import "./Knob.css";
 
+//refactor to hooks syntax
+
 export class Knob extends React.Component {
 	state = { ctlVal: 1 };
 

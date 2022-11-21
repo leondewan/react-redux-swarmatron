@@ -1,5 +1,7 @@
 export class Voice  {
 
+  //refactor to hooks syntax
+
     constructor(freq, vol, ctx) {
 
         this.vco=ctx.createOscillator();
