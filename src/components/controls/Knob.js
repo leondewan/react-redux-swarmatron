@@ -4,96 +4,106 @@ import "./Knob.css";
 
 //refactor to hooks syntax
 
-export class Knob extends React.Component {
-	state = { ctlVal: 1 };
+export const Knob = ({
+  children,
+  returnRawValue,
+  returnScaledValue,
+  setKnobAngle,
+  setScaledValue,
+  param
+}) => {
+  const knobEl = React.useRef();
+  const ctlVal = React.useRef(1);
+  const turnValue = React.useRef(setKnobAngle);
+  const prevTurnValue = React.useRef(0);
+  const turnStart = React.useRef(0);
 
-	componentDidMount(){
-		this.setState({ctlVal:this.props.setScaledValue});
-		this.turnValue=this.props.setKnobAngle;
-		this.rotateKnob();
-	}
+  React.useEffect(() => {
+    ctlVal.current = setScaledValue;
+    turnValue.current = setKnobAngle;
+    rotateKnob();
+  }, [])
 
+  React.useEffect(() => {
+    updateCtlValue()
+  }, [setScaledValue])
 
-    componentDidUpdate(prevProps, prevState) {
-		if(prevProps.setScaledValue!==this.props.setScaledValue){
-			 this.updateCtlValue();
-		}
-	 }
+  React.useRef()
 
-	initiateDrag = (event) => {
-		event.preventDefault();
-		event.gesture.preventDefault();
-		this.prevTurnValue=this.turnValue;
-		if(event.touches) this.turnStart=event.changedTouches[0].clientY;
-		else this.turnStart=event.clientY;
+  return (
+    <li className="knob">
+      <label>{children}</label>
+      <div className="body" onMouseDown={initiateDrag}
+        onTouchStart={initiateDrag}
+        ref={knobEl} >
+        <div className="pointer"></div>
+      </div>
+      <input type="text" value={ctlVal.current}
+        onChange={handleOnChange} />
+    </li>
+  );
 
-		document.addEventListener('mousemove', this.operate);
-		document.addEventListener('touchmove', this.operate);
-		document.addEventListener("mouseup", () => {
-			document.removeEventListener("mousemove", this.operate);
-			document.removeEventListener("touchmove", this.operate);
-		});
+  function initiateDrag(event) {
+    event.preventDefault();
+    event.touches && event.gesture.preventDefault();
+    prevTurnValue.current = turnValue.current;
+    if (event.touches) {
+      turnStart.current = event.changedTouches[0].clientY;
+    }
+    else {
+      turnStart.current = event.clientY;
+    }
 
-		document.addEventListener("touchend", () => {
-			document.removeEventListener("touchmove", this.operate);
-			document.removeEventListener("mousemove", this.operate);
-		});
-	}
+    document.addEventListener('mousemove', operate);
+    document.addEventListener('touchmove', operate);
+    document.addEventListener("mouseup", () => {
+      document.removeEventListener("mousemove", operate);
+      document.removeEventListener("touchmove", operate);
+    });
 
-	operate = (event) => {
-		let turn;
-		if(event.touches) turn = event.changedTouches[0].clientY;
-		else turn=event.clientY;
-       	let currTurn=Math.round(this.prevTurnValue - turn + this.turnStart);
+    document.addEventListener("touchend", () => {
+      document.removeEventListener("touchmove", operate);
+      document.removeEventListener("mousemove", operate);
+    });
+  }
 
-       	if(currTurn>=-150&&currTurn<=150){
-       		this.turnValue=currTurn;
-       		this.rotateKnob();
-       		this.props.returnRawValue(this.turnValue, this.props.param);
-			this.setState({ctlVal:this.props.setScaledValue});
-       	}
-	}
+  function operate(event) {
+    let turn;
+    if (event.touches) turn = event.changedTouches[0].clientY;
+    else turn = event.clientY;
+    let currTurn = Math.round(prevTurnValue.current - turn + turnStart.current);
 
-	rotateKnob = () => {
-		if(this.turnValue>150) this.turnValue=150;
-		if(this.turnValue<-150) this.turnValue=-150;
-		this.knobEl.style.webkitTransform = 'rotate(' + this.turnValue + 'deg)';
-		this.knobEl.style.transform = 'rotate(' + this.turnValue + 'deg)';
+    if (currTurn >= -150 && currTurn <= 150) {
+      turnValue.current = currTurn;
+      rotateKnob();
+      returnRawValue(turnValue.current, param);
+      ctlVal.current = setScaledValue;
+    }
+  }
 
-	}
+  function rotateKnob() {
+    if (turnValue.current > 150) turnValue.current = 150;
+    if (turnValue.current < -150) turnValue.current = -150;
+    knobEl.current.style.webkitTransform = 'rotate(' + turnValue.current + 'deg)';
+    knobEl.current.style.transform = 'rotate(' + turnValue.current + 'deg)';
 
-	handleOnChange = (event) => {
-		let val=parseFloat(event.target.value);
-		this.setState({ctlVal:val});
-		setTimeout(() => {this.delayedUpdate()}, 750);
-	}
+  }
 
-	delayedUpdate = () => {
-		this.props.returnScaledValue(this.state.ctlVal, this.props.param);
-		this.turnValue=this.props.setKnobAngle;
-		this.rotateKnob();
-	}
+  function handleOnChange(event) {
+    let val = parseFloat(event.target.value);
+    ctlVal.current = val;
+    setTimeout(() => { delayedUpdate() }, 750);
+  }
 
-	updateCtlValue = () => {
-		this.setState({ctlVal:this.props.setScaledValue});
-		this.turnValue=this.props.setKnobAngle;
-		this.rotateKnob();
-	}
+  function delayedUpdate () {
+    returnScaledValue(ctlVal.current, param);
+    turnValue.current = setKnobAngle;
+    rotateKnob();
+  }
 
-
-
-	render() {
-		return (
-			<li className="knob">
-				<label>{this.props.children}</label>
-				<div className="body" onMouseDown={this.initiateDrag}
-					onTouchStart={this.initiateDrag}
-					ref={(knobElement) => { this.knobEl=knobElement; }} >
-					<div className="pointer"></div>
-				</div>
-				<input type="text" value={this.state.ctlVal}
-				onChange={this.handleOnChange}/>
-			</li>
-		);
-	}
+  function updateCtlValue() {
+    ctlVal.current = setScaledValue;
+    turnValue.current = setKnobAngle;
+    rotateKnob();
+  }
 }

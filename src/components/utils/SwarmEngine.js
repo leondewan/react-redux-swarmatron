@@ -3,27 +3,28 @@ import { VolumeEnv } from '../envelopes/volumeEnvelope';
 import { Filtenv } from '../envelopes/filterEnvelope';
 import { Recorder } from '../record/recorder.js';
 
-export default function (audioContext) {
-    this.audioContext = audioContext;
-    this.recorderNode = this.audioContext.createGain();
-    this.recorder=new Recorder(this.recorderNode);
+export const SwarmEngine = audioContext => {
+  const _swarmEngine = {
+    audioContext,
+    recorderNode: audioContext.createGain(),
+    voices: new Voices(audioContext).createVoices(),
+    envNode: audioContext.createGain(),
+    filter: audioContext.createBiquadFilter(),
+    swOverdrive: audioContext.createWaveShaper(),
+    swarmVol: audioContext.createGain(),
+  }
 
-    this.voices= new Voices(this.audioContext).createVoices(); 
-    this.envNode=this.audioContext.createGain();
-    this.envNode.gain.value=0;
-    this.volumeEnv = new VolumeEnv(this.audioContext, this.envNode, this.linearEnv);
+  _swarmEngine.recorder = Recorder(_swarmEngine.recorderNode);
+  _swarmEngine.volumeEnv = VolumeEnv(audioContext, _swarmEngine.envNode, _swarmEngine.linearEnv);
+  _swarmEngine.filtenv = new Filtenv(audioContext, _swarmEngine.filter, _swarmEngine.volumeEnv.envSettings, _swarmEngine.linearEnv);
+  _swarmEngine.envNode.gain.value = 0;
 
-    this.filter=this.audioContext.createBiquadFilter();
-    this.filtenv=new Filtenv(this.audioContext, this.filter, 
-    this.volumeEnv.envSettings, this.linearEnv);        
+  _swarmEngine.voices.voiceMerger.connect(_swarmEngine.envNode);
+  _swarmEngine.envNode.connect(_swarmEngine.filter);
+  _swarmEngine.filter.connect(_swarmEngine.swOverdrive);
+  _swarmEngine.swOverdrive.connect(_swarmEngine.swarmVol);
+  _swarmEngine.swarmVol.connect(_swarmEngine.recorderNode);
+  _swarmEngine.swarmVol.connect(_swarmEngine.audioContext.destination);
 
-    this.swOverdrive = this.audioContext.createWaveShaper();
-
-    this.swarmVol=this.audioContext.createGain();
-    this.voices.voiceMerger.connect(this.envNode);
-    this.envNode.connect(this.filter);
-    this.filter.connect(this.swOverdrive);
-    this.swOverdrive.connect(this.swarmVol);
-    this.swarmVol.connect(this.recorderNode);
-    this.swarmVol.connect(this.audioContext.destination);
+  return _swarmEngine;
 }

@@ -1,76 +1,66 @@
 
-export var Recorder = function(source, cfg){
-    var config = cfg || {};
-    var bufferLen = config.bufferLen || 4096;
-    var numChannels = config.numChannels || 2;
-    this.context = source.context;
-    this.node = (this.context.createScriptProcessor ||
-        this.context.createJavaScriptNode).call(this.context,
-        bufferLen, numChannels, numChannels);
-    var worker = new Worker('/recorderWorker.js');
+export const Recorder = (source, cfg) => {
+  const config = cfg || {};
+  const bufferLen = config.bufferLen || 4096;
+  const numChannels = config.numChannels || 2;
+  const { context = {} } = source;
+  const node = (context.createScriptProcessor ||
+    context.createJavaScriptNode).call(context,
+      bufferLen, numChannels, numChannels);
+  const worker = new Worker('/recorderWorker.js');
+  worker.postMessage({
+    command: 'init',
+    config: {
+      sampleRate: context.sampleRate,
+      numChannels: numChannels
+    }
+  });
+  let recording = false;
+  let currCallback;
+
+  node.onaudioprocess = e => {
+    if (!recording) return;
+    const buffer = [];
+    for (let channel = 0; channel < numChannels; channel++) {
+      buffer.push(e.inputBuffer.getChannelData(channel));
+    }
     worker.postMessage({
-        command: 'init',
-        config: {
-            sampleRate: this.context.sampleRate,
-            numChannels: numChannels
-        }
+      command: 'record',
+      buffer: buffer
     });
-    var recording = false,
-        currCallback;
-
-    this.node.onaudioprocess = function(e){
-        if (!recording) return;
-        var buffer = [];
-        for (var channel = 0; channel < numChannels; channel++){
-            buffer.push(e.inputBuffer.getChannelData(channel));
-        }
-        worker.postMessage({
-            command: 'record',
-            buffer: buffer
-        });
+  }
+  const _recorder = {
+    record() {
+      recording = true;
+    },
+    stop() {
+      recording = false;
+    },
+    clear() {
+      worker.postMessage({ command: 'clear' });
+    },
+    getBuffer(cb) {
+      currCallback = cb || config.callback;
+      worker.postMessage({ command: 'getBuffer' })
+    },
+    exportWAV(cb, type) {
+      currCallback = cb || config.callback;
+      type = type || config.type || 'audio/wav';
+      if (!currCallback) throw new Error('Callback not set');
+      worker.postMessage({
+        command: 'exportWAV',
+        type: type
+      });
     }
+  }
 
-    this.configure = function(cfg){
-        for (var prop in cfg){
-            if (cfg.hasOwnProperty(prop)){
-                config[prop] = cfg[prop];
-            }
-        }
-    }
+  worker.onmessage = function (e) {
+    var blob = e.data;
+    currCallback(blob);
+  }
 
-    this.record = function(){
-        recording = true;
-    }
-
-    this.stop = function(){
-        recording = false;
-    }
-
-    this.clear = function(){
-        worker.postMessage({ command: 'clear' });
-    }
-
-    this.getBuffer = function(cb) {
-        currCallback = cb || config.callback;
-        worker.postMessage({ command: 'getBuffer' })
-    }
-
-    this.exportWAV = function(cb, type){
-        currCallback = cb || config.callback;
-        type = type || config.type || 'audio/wav';
-        if (!currCallback) throw new Error('Callback not set');
-        worker.postMessage({
-            command: 'exportWAV',
-            type: type
-        });
-    }
-
-    worker.onmessage = function(e){
-        var blob = e.data;
-        currCallback(blob);
-    }
-
-    source.connect(this.node);
-    this.node.connect(this.context.destination);
+  source.connect(node);
+  node.connect(context.destination);
+  return _recorder;
 };
 

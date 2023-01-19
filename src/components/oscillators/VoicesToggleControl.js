@@ -5,10 +5,6 @@ import { PushSwitch } from '../controls/PushSwitch';
 import * as actions from '../../actions';
 
 class VoicesToggleControl extends Component {
-    componentDidMount() {
-        console.log('props', this.props);
-    }
-
     powerVoice = (isOn, voice ) => {
         if(isOn){
             this.props.voices.voices[voice].voiceOn();
