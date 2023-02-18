@@ -34,5 +34,5 @@ export const VolumeEnv = (context, envNode, linearEnv) => {
     }
     return ({ envSettings })
   }
-  return ({ volEnvelope })
+  return ({ volEnvelope, envSettings })
 }

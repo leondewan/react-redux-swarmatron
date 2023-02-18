@@ -2,54 +2,40 @@ import React from 'react';
 
 import "./Ribbons.css";
 
-export class PitchRibbon extends React.Component {
-  constructor(props) {
-    super(props);
-    this.startNote = this.startNote.bind(this);
-    this.setCenterTone = this.setCenterTone.bind(this);
-    this.endNote = this.endNote.bind(this);
-    this.pitchStarted = false;
+export const PitchRibbon = ({
+  endTone,
+  setCenterTone: setCenterToneAction,
+  startTone,
+}) => {
+
+  const prib = React.useRef();
+  let pitchStarted = false, centerTone;
+
+  const [pitchRibbonOffset, setPitchRibbonOffset] = React.useState(0);
+  const [pitchRibbonScale, setPitchRibbonScale] = React.useState(0);
+
+  const setRibbon = () => {
+    setPitchRibbonScale(1000 / prib.current.getBoundingClientRect().width);
+    setPitchRibbonOffset(prib.current.getBoundingClientRect().left);
   }
 
-  componentDidMount() {
-    this.setRibbon(this.prib);
-  }
+  React.useEffect(() => {
+    setRibbon();
+  }, [])
 
-  setRibbon(pitchRibbon) {
-    this.pitchRibbonScale = 1000 / pitchRibbon.getBoundingClientRect().width;
-    this.pitchRibbonOffset = pitchRibbon.getBoundingClientRect().left;
-  }
-
-  startNote(event) {
+  const startNote = event => {
     event.preventDefault();
-    this.pitchStarted = true;
+    pitchStarted = true;
 
-    if (event.touches) this.centerTone = (event.changedTouches[0].clientX - this.pitchRibbonOffset) * this.pitchRibbonScale;
-    else this.centerTone = (event.clientX - this.pitchRibbonOffset) * this.pitchRibbonScale;
-    this.props.startTone(this.centerTone);
-  }
-
-  setCenterTone(event) {
-    if (this.pitchStarted) {
-      if (event.touches) {
-        if (this.checkRibbonBoundaries(event.changedTouches[0])) {
-          this.pitchStarted = false;
-          this.props.endTone();
-          return;
-        }
-        this.centerTone = (event.changedTouches[0].clientX - this.pitchRibbonOffset) * this.pitchRibbonScale;
-      }
-      else this.centerTone = (event.clientX - this.pitchRibbonOffset) * this.pitchRibbonScale;
-      this.props.setCenterTone(this.centerTone);
+    if (event.touches) {
+      centerTone = (event.changedTouches[0].clientX - pitchRibbonOffset) * pitchRibbonScale;
+    } else {
+      centerTone = (event.clientX - pitchRibbonOffset) * pitchRibbonScale;
+      startTone(centerTone);
     }
   }
 
-  endNote() {
-    this.pitchStarted = false;
-    this.props.endTone();
-  }
-
-  checkRibbonBoundaries(evt) {
+  const checkRibbonBoundaries = evt => {
     var xpos = evt.clientX,
       ypos = evt.clientY,
       bound = evt.target.getBoundingClientRect();
@@ -63,17 +49,41 @@ export class PitchRibbon extends React.Component {
     else return false;
   }
 
-  render() {
-    return (
-      <div className="ctl-ribbon" id="pitch-ribbon" ref={(pitchribbon) => { this.prib = pitchribbon; }}
-        onMouseDown={this.startNote}
-        onMouseMove={this.setCenterTone}
-        onTouchStart={this.startNote}
-        onTouchMove={this.setCenterTone}
-        onMouseUp={this.endNote}
-        onMouseOut={this.endNote}
-        onTouchEnd={this.endNote}
-      ></div>
-    )
+  const setCenterTone = event => {
+    if (pitchStarted) {
+      if (event.touches) {
+        if (checkRibbonBoundaries(event.changedTouches[0])) {
+          pitchStarted = false;
+          endTone();
+          return;
+        }
+        centerTone = (event.changedTouches[0].clientX - pitchRibbonOffset) * pitchRibbonScale;
+      }
+      else {
+        centerTone = (event.clientX - pitchRibbonOffset) * pitchRibbonScale;
+      }
+
+      setCenterToneAction(centerTone);
+    }
   }
+
+  const endNote = () => {
+    pitchStarted = false;
+    endTone();
+  }
+
+  return (
+    <div
+      className="ctl-ribbon"
+      id="pitch-ribbon"
+      ref={prib}
+      onMouseDown={startNote}
+      onMouseMove={setCenterTone}
+      onTouchStart={startNote}
+      onTouchMove={setCenterTone}
+      onMouseUp={endNote}
+      onMouseOut={endNote}
+      onTouchEnd={endNote}
+    ></div>
+  )
 }

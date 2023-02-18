@@ -18,7 +18,7 @@ const Swarmatron = () => {
 
 
   React.useEffect(() => {
-    const _audioContext = new window.AudioContext;
+    const _audioContext = new window.AudioContext();
     setAudioContext(_audioContext);
     setSwarmEngine(SwarmEngine(_audioContext));
     return () => audioContext && audioContext.close();
@@ -30,6 +30,14 @@ const Swarmatron = () => {
       document.activeElement.blur();
     });
   }, [swarmEngine])
+
+  const resetEnvelopes = () => {
+    var now = audioContext.currentTime;
+    swarmEngine.envNode.gain.cancelScheduledValues(now);
+    swarmEngine.envNode.gain.value = 0;
+    swarmEngine.filter.detune.cancelScheduledValues(now);
+    swarmEngine.filter.detune.value = 0;
+  }
 
   const togglePower = () => {
     const powerState = deviceOn;
@@ -45,14 +53,6 @@ const Swarmatron = () => {
       });
       resetEnvelopes();
     }
-  }
-
-  const resetEnvelopes = () => {
-    var now = audioContext.currentTime;
-    swarmEngine.envNode.gain.cancelScheduledValues(now);
-    swarmEngine.envNode.gain.value = 0;
-    swarmEngine.filter.detune.cancelScheduledValues(now);
-    swarmEngine.filter.detune.value = 0;
   }
 
   return renderSwarmatron();
@@ -80,7 +80,7 @@ const Swarmatron = () => {
               filtenv={swarmEngine.filtenv}
               swOverdrive={swarmEngine.swOverdrive}
               distortionCurve={swarmEngine.distortionCurve} />
-  
+
             <EnvelopeControl
               volumeEnv={swarmEngine.volumeEnv}
             />

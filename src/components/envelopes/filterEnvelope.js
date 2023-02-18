@@ -1,6 +1,5 @@
 
 export class Filtenv {
-
   constructor(context, filter, envSettings, linearEnv) {
     this.context = context;
     this.filter = filter;

@@ -25,6 +25,5 @@ export const SwarmEngine = audioContext => {
   _swarmEngine.swOverdrive.connect(_swarmEngine.swarmVol);
   _swarmEngine.swarmVol.connect(_swarmEngine.recorderNode);
   _swarmEngine.swarmVol.connect(_swarmEngine.audioContext.destination);
-
   return _swarmEngine;
 }

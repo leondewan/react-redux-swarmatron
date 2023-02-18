@@ -4,9 +4,8 @@ export const Recorder = (source, cfg) => {
   const bufferLen = config.bufferLen || 4096;
   const numChannels = config.numChannels || 2;
   const { context = {} } = source;
-  const node = (context.createScriptProcessor ||
-    context.createJavaScriptNode).call(context,
-      bufferLen, numChannels, numChannels);
+  const node = (context.createScriptProcessor).call(context,
+    bufferLen, numChannels, numChannels);
   const worker = new Worker('/recorderWorker.js');
   worker.postMessage({
     command: 'init',

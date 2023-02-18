@@ -25,7 +25,6 @@ class VoiceControl extends Component {
     this.setPitches(freq);
   }
 
-
   setSwarmInterval = (val) => {
     this.props.setSwarmInterval(val);
     this.setPitches();
@@ -53,7 +52,8 @@ class VoiceControl extends Component {
   render() {
     return (
       <div id="ribbonholder">
-        <PitchRibbon startTone={this.startTone}
+        <PitchRibbon
+          startTone={this.startTone}
           setCenterTone={this.setCenterTone}
           endTone={this.endTone}>
         </PitchRibbon>

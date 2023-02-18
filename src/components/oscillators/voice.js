@@ -1,33 +1,33 @@
-export class Voice  {
+export class Voice {
 
   //refactor to hooks syntax
 
-    constructor(freq, vol, ctx) {
+  constructor(freq, vol, ctx) {
+    this.vco = ctx.createOscillator();
+    this.vco.type = "sawtooth";
+    this.vco.frequency.value = freq;
 
-        this.vco=ctx.createOscillator();
-        this.vco.type="sawtooth";
-        this.vco.frequency.value=freq;
+    this.vca = ctx.createGain();
+    this.vca.gain.value = vol;
 
-        this.vca=ctx.createGain();
-        this.vca.gain.value=vol;
+    this.vco.connect(this.vca);
 
-        this.vco.connect(this.vca);
-    }
+  }
 
-    setFrequency(freq){
-        this.vco.frequency.value=freq;
-    }
+  setFrequency(freq) {
+    this.vco.frequency.value = freq;
+  }
 
-    voiceOn(){
-        this.vca.gain.value=0.125;
-    }
+  voiceOn() {
+    this.vca.gain.value = 0.125;
+  }
 
-    voiceOff(){
-        this.vca.gain.value=0;
-    }
+  voiceOff() {
+    this.vca.gain.value = 0;
+  }
 
-    voiceConnect(dest, chan1, chan2) {
-      this.vca.connect(dest, chan1, chan2);
-    }
+  voiceConnect(dest, chan1, chan2) {
+    this.vca.connect(dest, chan1, chan2);
+  }
 
 }
