@@ -1,37 +1,31 @@
 import React from 'react';
-
 import './ToggleSwitch.css';
 
+export const PowerSwitch = ({ togglePower }) => {
+  const [powerOn, setPowerOn] = React.useState(true);
 
-export class PowerSwitch extends React.Component {
-	constructor(props) {
-		super(props);
-		this.powerOn=true;
-	}
+  React.useEffect(() => {
+    togglePower(powerOn)
+  }, [powerOn])
 
-	togglePower = (event) => {
-		event.preventDefault();
-		this.powerOn=!this.powerOn;
+  const toggle = event => {
+    event.preventDefault();
+    setPowerOn(!powerOn);
+  }
 
-		if(this.powerOn) {
-			this.props.togglePower(true);
-		} else {
-			this.props.togglePower(false);
-		}
-	}
-
-	render() {
-		return(
-			<li className={this.powerOn ? 'toggleswitch on' : 'toggleswitch'} onClick={this.togglePower}
-			onTouchStart={this.togglePower}>
-				<label className="top">ON</label>
-				<div className="hexnut">
-					<div className="collar">
-						<div className="bat"></div>
-					</div>
-				</div>
-				<label className="bottom">OFF</label>
-			</li>
-		);
-	}
+  return (
+    <li
+      className={powerOn ? 'toggleswitch on' : 'toggleswitch'}
+      onClick={toggle}
+      onTouchStart={toggle}
+    >
+      <label className="top">ON</label>
+      <div className="hexnut">
+        <div className="collar">
+          <div className="bat"></div>
+        </div>
+      </div>
+      <label className="bottom">OFF</label>
+    </li>
+  );
 }
