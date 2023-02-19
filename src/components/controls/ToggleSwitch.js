@@ -3,9 +3,14 @@ import './ToggleSwitch.css';
 
 export const PowerSwitch = ({ togglePower }) => {
   const [powerOn, setPowerOn] = React.useState(true);
+  const [init, setInit] = React.useState(false);
 
   React.useEffect(() => {
-    togglePower(powerOn)
+    setInit(true);
+  }, [])
+
+  React.useEffect(() => {
+    init && togglePower(powerOn)
   }, [powerOn])
 
   const toggle = event => {
